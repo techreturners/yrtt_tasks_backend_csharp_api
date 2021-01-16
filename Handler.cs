@@ -7,7 +7,7 @@ namespace AwsDotnetCsharp
     {
        public Response Hello(Request request)
        {
-           return new Response("Go Serverless v1.0! Your function executed successfully!", request);
+           return new Response("Hello Tech Returners!", request);
        }
     }
 
