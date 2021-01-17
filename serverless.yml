@@ -15,7 +15,7 @@ functions:
   tasks-api:
     handler: CsharpHandlers::AwsDotnetCsharp.Handler::Hello
     package:
-      artifact: bin/Release/netcoreapp3.1/hello.zip
+      artifact: bin/Release/netcoreapp3.1/tasks-api.zip
     events:
       - httpApi:
           path: /tasks
