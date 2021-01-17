@@ -37,13 +37,33 @@ namespace AwsDotnetCsharp
             StatusCode = 200,
           };
        }
+
+       public APIGatewayProxyResponse SaveTask(APIGatewayProxyRequest request) {
+
+          string requestBody = request.Body;
+          Task t = JsonSerializer.Deserialize<Task>(requestBody);
+          LambdaLogger.Log("Saving task: " + t.Description);
+
+          return new APIGatewayProxyResponse
+          {
+            Body = "Task Saved",
+            Headers = new Dictionary<string, string>
+            { 
+                { "Content-Type", "application/json" }, 
+                { "Access-Control-Allow-Origin", "*" } 
+            },
+            StatusCode = 200,
+          };
+       }
     }
 
     public class Task
     {
-      public string TaskId {get;}
-      public string Description {get;}
-      public bool Completed {get;}
+      public string TaskId {get; set;}
+      public string Description {get; set;}
+      public bool Completed {get; set;}
+
+      public Task() {}
 
       public Task(string taskId, string description, bool completed){
         TaskId = taskId;
