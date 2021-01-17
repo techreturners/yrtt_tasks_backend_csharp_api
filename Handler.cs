@@ -1,18 +1,28 @@
 using Amazon.Lambda.Core;
 using System.Collections;
+using Amazon.Lambda.APIGatewayEvents;
 
 [assembly:LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 namespace AwsDotnetCsharp
 {
     public class Handler
     {
-       public ArrayList Hello(Request request)
+       public ArrayList GetTasks(APIGatewayProxyRequest request)
        {
+          string userId = request.PathParameters["userId"];
+          LambdaLogger.Log("Getting tasks for: " +userId);
+
           ArrayList tasks = new ArrayList();
-          Task t1 = new Task("abc1234", "Buy the milk", false);
-          Task t2 = new Task("abc4567", "Pick up newspaper", false);
-          tasks.Add(t1);
-          tasks.Add(t2);
+
+          if(userId == "abc123") {
+            Task t1 = new Task("abc1234", "Buy the milk", false);
+            tasks.Add(t1);
+          }
+          else {
+            Task t2 = new Task("abc4567", "Pick up newspaper", false);
+            tasks.Add(t2);
+          }
+
           return tasks;
        }
     }
