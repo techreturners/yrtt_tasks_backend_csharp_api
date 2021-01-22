@@ -11,12 +11,17 @@ namespace AwsDotnetCsharp
 {
     public class Handler
     {
+       private string DB_HOST = System.Environment.GetEnvironmentVariable("DB_HOST");
+       private string DB_NAME = System.Environment.GetEnvironmentVariable("DB_NAME");
+       private string DB_USER = System.Environment.GetEnvironmentVariable("DB_USER");
+       private string DB_PASSWORD = System.Environment.GetEnvironmentVariable("DB_PASSWORD");
+
        public APIGatewayProxyResponse GetTasks(APIGatewayProxyRequest request)
        {
           string userId = request.PathParameters["userId"];
           LambdaLogger.Log("Getting tasks for: " +userId);
 
-          MySqlConnection connection = new MySqlConnection("server=some-instance-address;user id=some-username;password=kfgdfgdfgt;port=3306;database=some-database-name;");
+          MySqlConnection connection = new MySqlConnection($"server={DB_HOST};user id={DB_USER};password={DB_PASSWORD};port=3306;database={DB_NAME};");
           connection.Open();
 
           var cmd = connection.CreateCommand();
