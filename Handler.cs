@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Amazon.Lambda.APIGatewayEvents;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using MySql.Data.MySqlClient;
 
 [assembly:LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 namespace AwsDotnetCsharp
@@ -15,16 +16,23 @@ namespace AwsDotnetCsharp
           string userId = request.PathParameters["userId"];
           LambdaLogger.Log("Getting tasks for: " +userId);
 
+          MySqlConnection connection = new MySqlConnection("server=some-instance-address;user id=some-username;password=kfgdfgdfgt;port=3306;database=some-database-name;");
+          connection.Open();
+
+          var cmd = connection.CreateCommand();
+          cmd.CommandText = @"SELECT * FROM `task` WHERE `userId` = @userId";
+          cmd.Parameters.AddWithValue("@userId", userId);
+
+          MySqlDataReader reader = cmd.ExecuteReader();
           ArrayList tasks = new ArrayList();
 
-          if(userId == "abc123") {
-            Task t1 = new Task("abc1234", "Buy the milk", false);
-            tasks.Add(t1);
+          while (reader.Read())
+          {
+            Task task = new Task(reader.GetString("taskId"), reader.GetString("description"), reader.GetBoolean("completed"));
+            tasks.Add(task);
           }
-          else {
-            Task t2 = new Task("abc4567", "Pick up newspaper", false);
-            tasks.Add(t2);
-          }
+
+          connection.Close();
 
           return new APIGatewayProxyResponse
           {
